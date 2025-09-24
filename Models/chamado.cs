@@ -22,8 +22,9 @@ namespace aula2ApiServico.Models
         [Column("data_fechamento_cha")]
         public DateTime dataFechamento { get; set; }
 
-        [Column("situacao_cha")]
-        public string Status { get; set; } = "Aberto";
+
+        [Column("situacao")]
+        public string situacao { get; set; } = "Aberto";
 
     }
 }

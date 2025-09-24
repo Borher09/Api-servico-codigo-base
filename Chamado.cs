@@ -7,7 +7,7 @@
         public required string Titulo { get; set; }
         public required string Descricao { get; set; }
 
-        public string Status { get; set; } = "Aberto";
+        public string situacao { get; set; } = "Aberto";
 
     }
 }

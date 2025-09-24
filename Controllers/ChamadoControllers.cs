@@ -27,9 +27,21 @@ namespace aula2ApiServico.Controllers // Define o namespace onde o controller es
         private static int _proximoId = 3;
 
         [HttpGet] // Define que este método responde a requisições HTTP GET para /chamados.
-       public async Task<IActionResult> BuscarTodos()
+        public async Task<IActionResult> BuscarTodos([FromQuery] string? search, [FromQuery] string? situacao)
         {
-            var chamados = await _context.Chamados.ToListAsync();
+            var query = _context.Chamados.AsQueryable();
+
+
+            if (search is not null)
+            {
+                query = query.Where(x => x.Titulo.Contains(search));
+
+            }
+            if (situacao is not null)
+            {
+                query = query.Where(x => x.situacao.Equals(situacao));
+            }
+            var chamados = await query.ToListAsync();
 
             return Ok(chamados);
         }
@@ -50,7 +62,7 @@ namespace aula2ApiServico.Controllers // Define o namespace onde o controller es
         [HttpPost] // Define que este método responde a requisições HTTP POST para /chamados.
         public async Task<IActionResult> Criar([FromBody] ChamadoDto novoChamado)
         {
-        
+
             // Cria um novo objeto Chamado com os dados recebidos via DTO.
             var chamado = new Chamado() { Titulo = novoChamado.titulo, Descricao = novoChamado.Descricao };
             await _context.Chamados.AddAsync(chamado);
@@ -66,7 +78,7 @@ namespace aula2ApiServico.Controllers // Define o namespace onde o controller es
             var chamado = await _context.Chamados.FirstOrDefaultAsync(x => x.Id == id);
 
 
-         if (chamado is null)
+            if (chamado is null)
             {
                 return NotFound();
             }
@@ -86,17 +98,17 @@ namespace aula2ApiServico.Controllers // Define o namespace onde o controller es
         {
             var chamado = _ListaChamados.FirstOrDefault(x => x.Id == id);
 
-            if(chamado == null)
+            if (chamado == null)
             {
                 return NotFound();
             }
 
-            chamado.Status = "Finalizado";
-            return Ok(chamado.Status);
+            chamado.situacao = "Finalizado";
+            return Ok(chamado.situacao);
         }
 
         [HttpDelete("{id}")] // Define rota DELETE para remover um chamado pelo ID.
-   
+
         public async Task<IActionResult> Remover(int id, [FromBody] ChamadoDto atualizarChamado)
         {
             var chamado = await _context.Chamados.FirstOrDefaultAsync(x => x.Id == id);
@@ -113,6 +125,8 @@ namespace aula2ApiServico.Controllers // Define o namespace onde o controller es
             return Ok(chamado);
         }
 
+
+
+
     }
 }
- 
